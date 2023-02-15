@@ -3,3 +3,4 @@ sensor_server
 .vscode
 mesh_core
 /*/build
+test_*
