@@ -1,0 +1,5 @@
+sensor_client
+sensor_server
+.vscode
+mesh_core
+/*/build
