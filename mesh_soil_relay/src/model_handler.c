@@ -26,8 +26,7 @@ static const struct bt_mesh_sensor_cli_handlers bt_mesh_sensor_cli_handlers = {
 	.sensor = sensor_cli_desc_cb,
 };
 
-static struct bt_mesh_sensor_cli sensor_cli =
-	BT_MESH_SENSOR_CLI_INIT(&bt_mesh_sensor_cli_handlers);
+static struct bt_mesh_sensor_cli sensor_cli = BT_MESH_SENSOR_CLI_INIT(&bt_mesh_sensor_cli_handlers);
 
 static struct k_work_delayable get_data_work;
 
@@ -48,67 +47,42 @@ static void get_data(struct k_work *work)
 	k_work_schedule(&get_data_work, K_MSEC(GET_DATA_INTERVAL));
 }
 
-
-/* Set up a repeating delayed work to blink the DK's LEDs when attention is
- * requested.
- */
-static struct k_work_delayable attention_blink_work;
-static bool attention;
-
-static void attention_blink(struct k_work *work)
+static void health_current_status(struct bt_mesh_health_cli *cli, uint16_t addr,
+				  uint8_t test_id, uint16_t cid, uint8_t *faults,
+				  size_t fault_count)
 {
-	static int idx;
-	const uint8_t pattern[] = {
-#if DT_NODE_EXISTS(DT_ALIAS(led0))
-		BIT(0),
-#endif
-#if DT_NODE_EXISTS(DT_ALIAS(led1))
-		BIT(1),
-#endif
-#if DT_NODE_EXISTS(DT_ALIAS(led2))
-		BIT(2),
-#endif
-#if DT_NODE_EXISTS(DT_ALIAS(led3))
-		BIT(3),
-#endif
-	};
+	size_t i;
 
-	if (attention) {
-		dk_set_leds(pattern[idx++ % ARRAY_SIZE(pattern)]);
-		k_work_reschedule(&attention_blink_work, K_MSEC(30));
-	} else {
-		dk_set_leds(DK_NO_LEDS_MSK);
+	printk("Health Current Status from 0x%04x\n", addr);
+
+	if (!fault_count) {
+		printk("Health Test ID 0x%02x Company ID 0x%04x: no faults\n",
+		       test_id, cid);
+		return;
+	}
+
+	printk("Health Test ID 0x%02x Company ID 0x%04x Fault Count %zu:\n",
+	       test_id, cid, fault_count);
+
+	for (i = 0; i < fault_count; i++) {
+		printk("\t0x%02x\n", faults[i]);
 	}
 }
 
-static void attention_on(struct bt_mesh_model *mod)
-{
-	attention = true;
-	k_work_reschedule(&attention_blink_work, K_NO_WAIT);
-}
-
-static void attention_off(struct bt_mesh_model *mod)
-{
-	/* Will stop rescheduling blink timer */
-	attention = false;
-}
-
-static const struct bt_mesh_health_srv_cb health_srv_cb = {
-	.attn_on = attention_on,
-	.attn_off = attention_off,
+static struct bt_mesh_health_cli health_cli = {
+	.current_status = health_current_status,
 };
 
-static struct bt_mesh_health_srv health_srv = {
-	.cb = &health_srv_cb,
-};
 
-BT_MESH_HEALTH_PUB_DEFINE(health_pub, 0);
+static struct bt_mesh_cfg_cli cfg_cli = {
+};
 
 static struct bt_mesh_elem elements[] = {
 	BT_MESH_ELEM(
 		1, BT_MESH_MODEL_LIST(
 			BT_MESH_MODEL_CFG_SRV,
-			BT_MESH_MODEL_HEALTH_SRV(&health_srv, &health_pub),
+			BT_MESH_MODEL_CFG_CLI(&cfg_cli),
+			BT_MESH_MODEL_HEALTH_CLI(&health_cli),
 			BT_MESH_MODEL_SENSOR_CLI(&sensor_cli)),
 		BT_MESH_MODEL_NONE),
 };
@@ -121,10 +95,9 @@ static const struct bt_mesh_comp comp = {
 
 const struct bt_mesh_comp *model_handler_init(void)
 {
-	k_work_init_delayable(&attention_blink_work, attention_blink);
-	k_work_init_delayable(&get_data_work, get_data);
+	// k_work_init_delayable(&get_data_work, get_data);
 	
-	k_work_schedule(&get_data_work, K_MSEC(GET_DATA_INTERVAL));
+	// k_work_schedule(&get_data_work, K_MSEC(GET_DATA_INTERVAL));
 
 	return &comp;
 }
