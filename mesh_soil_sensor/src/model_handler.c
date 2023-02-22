@@ -4,27 +4,7 @@
 #include <bluetooth/mesh/sensor_types.h>
 #include <dk_buttons_and_leds.h>
 #include "model_handler.h"
-
-static int soil_humidity_get(struct bt_mesh_sensor_srv *srv,
-					struct bt_mesh_sensor *sensor,
-                    struct bt_mesh_msg_ctx *ctx,
-                    struct sensor_value *rsp)
-{
-	rsp->val1 = 0;
-	rsp->val2 = 3245230;
-    return 0;
-}
-
-struct bt_mesh_sensor soil_humidity_sensor = {
-    .type = &bt_mesh_sensor_present_amb_rel_humidity,
-    .get = soil_humidity_get,
-};
-
-static struct bt_mesh_sensor *const sensors[] = {
-	&soil_humidity_sensor,
-};
-
-static struct bt_mesh_sensor_srv sensor_srv = BT_MESH_SENSOR_SRV_INIT(sensors, ARRAY_SIZE(sensors));
+#include "soil_srv.h"
 
 /* Set up a repeating delayed work to blink the DK's LEDs when attention is
  * requested.
@@ -81,13 +61,19 @@ static struct bt_mesh_health_srv health_srv = {
 
 BT_MESH_HEALTH_PUB_DEFINE(health_pub, 0);
 
+/* Soil sensor */
+
+static struct bt_mesh_soil_srv soil_srv;
+
 static struct bt_mesh_elem elements[] = {
-	BT_MESH_ELEM(1,
+	BT_MESH_ELEM(0,
 		BT_MESH_MODEL_LIST(
 			BT_MESH_MODEL_CFG_SRV,
-			BT_MESH_MODEL_HEALTH_SRV(&health_srv, &health_pub),
-			BT_MESH_MODEL_SENSOR_SRV(&sensor_srv)),
-		BT_MESH_MODEL_NONE
+			BT_MESH_MODEL_HEALTH_SRV(&health_srv, &health_pub)
+		),
+		BT_MESH_MODEL_LIST(
+			BT_MESH_MODEL_SOIL_SRV(&soil_srv)
+		)
 	),
 };
 
