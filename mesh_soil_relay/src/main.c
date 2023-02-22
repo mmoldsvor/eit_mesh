@@ -66,21 +66,6 @@ static void configure_self(struct bt_mesh_cdb_node *self)
 		printk("Failed to bind app-key (err %d, status %d)\n", err, status);
 		return;
 	}
-	
-	struct bt_mesh_cfg_cli_mod_pub pub = {
-		.addr = GROUP_ADDR,
-		.uuid = NULL,
-		.app_idx = app_idx,
-		.cred_flag = false,
-		.ttl = 5,
-		.period = BT_MESH_PUB_PERIOD_10SEC(1),
-		.transmit = BT_MESH_TRANSMIT(0, 100),
-	};
-	err = bt_mesh_cfg_cli_mod_pub_set(self->net_idx, self->addr, self->addr, BT_MESH_MODEL_ID_SENSOR_CLI, &pub, &status);
-	if (err || status) {
-		printk("Failed Publication Set (err: %d, status: %d)\n", err, status);
-		return;
-	}
 
 	err = bt_mesh_cfg_cli_mod_sub_add(self->net_idx, self->addr, self->addr, GROUP_ADDR, BT_MESH_MODEL_ID_SENSOR_CLI, &status);
 	if (err || status) {
@@ -153,25 +138,28 @@ static void configure_node(struct bt_mesh_cdb_node *node)
 				       status);
 			}
 
-			struct bt_mesh_cfg_cli_mod_pub pub = {
-				.addr = GROUP_ADDR,
-				.uuid = NULL,
-				.app_idx = app_idx,
-				.cred_flag = false,
-				.ttl = 5,
-				.period = BT_MESH_PUB_PERIOD_10SEC(1),
-				.transmit = BT_MESH_TRANSMIT(0, 100)
-			};
-			err = bt_mesh_cfg_cli_mod_pub_set(net_idx, node->addr, elem_addr, id, &pub, &status);
-			if (err || status) {
-				printk("Failed Publication Set (err: %d, status: %d)\n", err,
-				       status);
-			}
+			if (id == BT_MESH_MODEL_ID_SENSOR_SRV) {
+				printk("Setting Publication and subscription for Sensor Server\n");
+				struct bt_mesh_cfg_cli_mod_pub pub = {
+					.addr = GROUP_ADDR,
+					.uuid = NULL,
+					.app_idx = app_idx,
+					.cred_flag = false,
+					.ttl = 5,
+					.period = BT_MESH_PUB_PERIOD_10SEC(1),
+					.transmit = BT_MESH_TRANSMIT(0, 100)
+				};
+				err = bt_mesh_cfg_cli_mod_pub_set(net_idx, node->addr, elem_addr, id, &pub, &status);
+				if (err || status) {
+					printk("Failed Publication Set (err: %d, status: %d)\n", err,
+						status);
+				}
 
-			err = bt_mesh_cfg_cli_mod_sub_add(net_idx, node->addr, elem_addr, GROUP_ADDR, id, &status);
-			if (err || status) {
-				printk("Failed Subscribe (err: %d, status: %d)\n", err,
-				       status);
+				err = bt_mesh_cfg_cli_mod_sub_add(net_idx, node->addr, elem_addr, GROUP_ADDR, id, &status);
+				if (err || status) {
+					printk("Failed Subscribe (err: %d, status: %d)\n", err,
+						status);
+				}
 			}
 		}
 

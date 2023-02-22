@@ -95,9 +95,9 @@ static const struct bt_mesh_comp comp = {
 
 const struct bt_mesh_comp *model_handler_init(void)
 {
-	k_work_init_delayable(&get_data_work, get_data);
+	// k_work_init_delayable(&get_data_work, get_data);
 	
-	k_work_schedule(&get_data_work, K_MSEC(GET_DATA_INTERVAL));
+	// k_work_schedule(&get_data_work, K_MSEC(GET_DATA_INTERVAL));
 
 	return &comp;
 }
