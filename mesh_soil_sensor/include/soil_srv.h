@@ -25,7 +25,7 @@ struct bt_mesh_soil_srv {
 	/* Publication buffer */
 	struct net_buf_simple pub_msg;
 	/* Publication data */
-	uint8_t buf[BT_MESH_MODEL_BUF_LEN(BT_MESH_SOIL_OP_SOIL_REPORT, BT_MESH_LEN_EXACT(1))];
+	uint8_t buf[BT_MESH_MODEL_BUF_LEN(BT_MESH_SOIL_OP_SOIL_REPORT, BT_MESH_LEN_EXACT(2))];
 	/** Transaction ID tracker for the set messages. */
 	struct bt_mesh_tid_ctx prev_transaction;
 };

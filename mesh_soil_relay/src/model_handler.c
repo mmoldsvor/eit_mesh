@@ -57,7 +57,7 @@ static struct bt_mesh_cfg_cli cfg_cli = {
 
 void handle_soil_report(struct bt_mesh_soil_cli *cli, struct bt_mesh_msg_ctx *ctx, struct bt_mesh_soil_report soil)
 {
-	printk("Soil report\n");
+	printk("Soil report, %d, %d\n", soil.humidity, soil.temperature);
 }
 
 static const struct bt_mesh_soil_cli_handlers soil_cb = {

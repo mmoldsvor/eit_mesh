@@ -20,7 +20,7 @@ static int handle_message_report(struct bt_mesh_model *model, struct bt_mesh_msg
 
 const struct bt_mesh_model_op _bt_mesh_soil_cli_op[] = {
 	{
-		BT_MESH_SOIL_OP_SOIL_REPORT, BT_MESH_LEN_EXACT(1), handle_message_report
+		BT_MESH_SOIL_OP_SOIL_REPORT, BT_MESH_LEN_EXACT(2), handle_message_report
 	},
 	BT_MESH_MODEL_OP_END,
 };

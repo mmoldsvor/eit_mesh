@@ -14,8 +14,12 @@ static int bt_mesh_soil_srv_report(struct bt_mesh_soil_srv *srv, struct bt_mesh_
 
 static int bt_mesh_soil_srv_update(struct bt_mesh_model *model)
 {
+	struct bt_mesh_soil_srv *soil = model->user_data;
+
     printk("bt_mesh_soil_srv_update\n");
     bt_mesh_model_msg_init(model->pub->msg, BT_MESH_SOIL_OP_SOIL_REPORT);
+	net_buf_simple_add_u8(model->pub->msg, 1);
+	net_buf_simple_add_u8(model->pub->msg, 2);
 
     return 0;
 }

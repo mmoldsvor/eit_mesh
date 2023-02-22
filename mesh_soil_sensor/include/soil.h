@@ -13,7 +13,7 @@ struct bt_mesh_soil_report {
     uint8_t temperature;
 };
 
-#define BT_MESH_SOIL_OP_SOIL_REPORT BT_MESH_MODEL_OP_3(0x0F, CONFIG_BT_COMPANY_ID)
+#define BT_MESH_SOIL_OP_SOIL_REPORT BT_MESH_MODEL_OP_3(0x11, CONFIG_BT_COMPANY_ID)
 
-#endif /* BT_MESH_SOIL_H__ */
+#endif
 
