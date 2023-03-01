@@ -3,6 +3,8 @@
 #include <bluetooth/mesh/dk_prov.h>
 #include <dk_buttons_and_leds.h>
 #include "model_handler.h"
+#include "soil_cli.h"
+#include "soil.h"
 
 #define GROUP_ADDR 0xc000
 
@@ -47,8 +49,7 @@ static void configure_self(struct bt_mesh_cdb_node *self)
 	}
 
 	/* Add Application Key */
-	err = bt_mesh_cfg_cli_app_key_add(self->net_idx, self->addr, self->net_idx, app_idx,
-					  key->keys[0].app_key, &status);
+	err = bt_mesh_cfg_cli_app_key_add(self->net_idx, self->addr, self->net_idx, app_idx, key->keys[0].app_key, &status);
 	if (err || status) {
 		printk("Failed to add app-key (err %d, status %d)\n", err,
 		       status);
@@ -58,19 +59,19 @@ static void configure_self(struct bt_mesh_cdb_node *self)
 	err = bt_mesh_cfg_cli_mod_app_bind(self->net_idx, self->addr, self->addr, app_idx, BT_MESH_MODEL_ID_HEALTH_CLI, &status);
 	if (err || status) {
 		printk("Failed to bind app-key (err %d, status %d)\n", err, status);
-		return;
+		// return;
 	}
 
-	err = bt_mesh_cfg_cli_mod_app_bind(self->net_idx, self->addr, self->addr, app_idx, BT_MESH_MODEL_ID_SENSOR_CLI, &status);
+	err = bt_mesh_cfg_cli_mod_app_bind_vnd(self->net_idx, self->addr, self->addr, app_idx, SOIL_CLI_MODEL_ID, CONFIG_BT_COMPANY_ID, &status);
 	if (err || status) {
 		printk("Failed to bind app-key (err %d, status %d)\n", err, status);
-		return;
+		// return;
 	}
 
-	err = bt_mesh_cfg_cli_mod_sub_add(self->net_idx, self->addr, self->addr, GROUP_ADDR, BT_MESH_MODEL_ID_SENSOR_CLI, &status);
+	err = bt_mesh_cfg_cli_mod_sub_add_vnd(self->net_idx, self->addr, self->addr, GROUP_ADDR, SOIL_CLI_MODEL_ID, CONFIG_BT_COMPANY_ID, &status);
 	if (err || status) {
 		printk("Failed Subscribe (err: %d, status: %d)\n", err, status);
-		return;
+		// return;
 	}
 
 	atomic_set_bit(self->flags, BT_MESH_CDB_NODE_CONFIGURED);
@@ -135,31 +136,40 @@ static void configure_node(struct bt_mesh_cdb_node *node)
 			err = bt_mesh_cfg_cli_mod_app_bind(net_idx, node->addr, elem_addr, app_idx, id, &status);
 			if (err || status) {
 				printk("Failed (err: %d, status: %d)\n", err,
-				       status);
+					status);
+			}
+		}
+
+		for (int i = 0; i < elem.nvnd; i++) {
+			struct bt_mesh_mod_id_vnd id = bt_mesh_comp_p0_elem_mod_vnd(&elem, i);
+
+			printk("Binding AppKey to model 0x%03x:%04x:%04x\n", elem_addr, id.company, id.id);
+
+			err = bt_mesh_cfg_cli_mod_app_bind_vnd(net_idx, node->addr, elem_addr, app_idx, id.id, id.company, &status);
+			if (err || status) {
+				printk("Failed (err: %d, status: %d)\n", err, status);
 			}
 
-			if (id == BT_MESH_MODEL_ID_SENSOR_SRV) {
-				printk("Setting Publication and subscription for Sensor Server\n");
-				struct bt_mesh_cfg_cli_mod_pub pub = {
-					.addr = GROUP_ADDR,
-					.uuid = NULL,
-					.app_idx = app_idx,
-					.cred_flag = false,
-					.ttl = 5,
-					.period = BT_MESH_PUB_PERIOD_10SEC(1),
-					.transmit = BT_MESH_TRANSMIT(0, 100)
-				};
-				err = bt_mesh_cfg_cli_mod_pub_set(net_idx, node->addr, elem_addr, id, &pub, &status);
-				if (err || status) {
-					printk("Failed Publication Set (err: %d, status: %d)\n", err,
-						status);
-				}
+			printk("Setting Publication and subscription for Sensor Server\n");
+			struct bt_mesh_cfg_cli_mod_pub pub = {
+				.addr = GROUP_ADDR,
+				.uuid = NULL,
+				.app_idx = app_idx,
+				.cred_flag = false,
+				.ttl = 5,
+				.period = BT_MESH_PUB_PERIOD_10SEC(1),
+				.transmit = BT_MESH_TRANSMIT(0, 100)
+			};
+			err = bt_mesh_cfg_cli_mod_pub_set_vnd(net_idx, node->addr, elem_addr, id.id, id.company, &pub, &status);
+			if (err || status) {
+				printk("Failed Publication Set (err: %d, status: %d)\n", err,
+					status);
+			}
 
-				err = bt_mesh_cfg_cli_mod_sub_add(net_idx, node->addr, elem_addr, GROUP_ADDR, id, &status);
-				if (err || status) {
-					printk("Failed Subscribe (err: %d, status: %d)\n", err,
-						status);
-				}
+			err = bt_mesh_cfg_cli_mod_sub_add_vnd(net_idx, node->addr, elem_addr, GROUP_ADDR, id.id, id.company, &status);
+			if (err || status) {
+				printk("Failed Subscribe (err: %d, status: %d)\n", err,
+					status);
 			}
 		}
 
@@ -217,6 +227,7 @@ static int bt_ready(void)
 	dk_leds_init();
 	dk_buttons_init(NULL);
 
+	// err = bt_mesh_init(&prov, model_handler_init());
 	err = bt_mesh_init(&prov, model_handler_init());
 	if (err) {
 		printk("Initializing mesh failed (err %d)\n", err);

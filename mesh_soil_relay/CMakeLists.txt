@@ -5,5 +5,6 @@ project(NONE)
 
 target_sources(app PRIVATE
 	src/main.c
-	src/model_handler.c)
+	src/model_handler.c
+	src/soil_cli.c)
 target_include_directories(app PRIVATE include)

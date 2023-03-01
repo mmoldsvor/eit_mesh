@@ -42,6 +42,7 @@ static void bt_ready(int err)
 	dk_buttons_init(NULL);
 
 	err = bt_mesh_init(&prov, model_handler_init());
+	// err = bt_mesh_init(bt_mesh_dk_prov_init(), model_handler_init());
 	if (err) {
 		printk("Initializing mesh failed (err %d)\n", err);
 		return;
