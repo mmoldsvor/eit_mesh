@@ -1,0 +1,16 @@
+﻿@page
+@model CropChain.Pages.DataPageModel
+@using CropChain.Models
+
+@{
+    ViewData["Title"] = "Data Page";
+}
+<h1>@ViewData["Title"]</h1>
+
+<h2>Humidity</h2>
+
+<p>
+    Latest measurement: @Model.GetDataCollection().getLatest().Timestamp.ToString() - @Model.GetDataCollection().getLatest().Data.ToString()
+</p>
+
+<img src="~/resources/temp1.png" width=1000 style="margin:0px 20px;" alt="Measured Data">
