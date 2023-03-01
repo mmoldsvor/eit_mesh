@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 import random
 
 SENSOR_HUMIDITY = 'humid'
-SENSOR_TEMPERATURE = 'temperature'
+SENSOR_TEMPERATURE = 'temp'
 
 SENSOR_TYPES = {
     SENSOR_HUMIDITY,
