@@ -41,6 +41,11 @@ namespace CropChain.Data
             return ConstructData(context.Measurements.OrderByDescending(x => x.Timestamp).Take(n).ToList());
         }
 
+        public static DataCollection Get_Typed_DataCollection(CropChain.Data.CropChainContext context, int n, string type)
+        {
+            return ConstructData(context.Measurements.OrderByDescending(x => x.Timestamp).Where(x => x.Data_Type == type).Take(n).ToList());
+        }
+
         internal static DataCollection ConstructData(List<Measurements> data)
         {
             List<Models.DataPoint> dataPoints = new List<Models.DataPoint>();

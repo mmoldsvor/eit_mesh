@@ -11,6 +11,7 @@ namespace CropChain.Pages
     {
 
         private DataCollection dataCollection;
+        private List<DataCollection> dataCollections;
         private Plot dataPlot = new Plot();
 
 
@@ -18,12 +19,13 @@ namespace CropChain.Pages
 
         public DataPageModel(CropChain.Data.CropChainContext context)
         {
+            dataCollections = new List<DataCollection>();
             _context = context;
         }
 
         public void OnGet()
         {
-            this.dataCollection = Deserializer.GetDataCollection(_context, 5);
+            this.dataCollection = Deserializer.Get_Typed_DataCollection(_context, 5, "humid");
             ConstructChart();
         }
 
