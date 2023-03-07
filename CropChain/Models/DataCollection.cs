@@ -6,13 +6,18 @@
         private List<DataPoint> measurements;
         private float alertLimit;
         private List<IObserver<DataPoint>> observers;
+        
+        private string data_Type;
+        private int sensor_Id;
 
 
-        public DataCollection(List<DataPoint> measurements)
+        public DataCollection(List<DataPoint> measurements, string data_Type, int sensor_Id)
         {
             this.measurements = measurements;
             this.alertLimit = 0.3f;
             this.observers = new List<IObserver<DataPoint>>();
+            this.data_Type = data_Type;
+            this.sensor_Id = sensor_Id;
         }
 
         public IDisposable Subscribe(IObserver<DataPoint> observer)
@@ -64,6 +69,12 @@
         {
             return alertLimit;
         }
+
+        public string getData_Type()
+        { return data_Type; }
+
+        public int getSensor_Id()
+        { return sensor_Id; }
 
     }
 }
