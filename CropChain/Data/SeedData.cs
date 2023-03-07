@@ -85,7 +85,7 @@ public static class SeedData
 
                 new Measurements
                 {
-                Data = 0.4m,
+                Data = 1.4m,
                 Timestamp = new DateTime(2022, 12, 29, 23, 2, 1),
                 Data_Type = "ph",
                 Sensor_Id = 2
@@ -93,7 +93,7 @@ public static class SeedData
 
                 new Measurements
                 {
-                    Data = 0.32m,
+                    Data = 1.32m,
                     Timestamp = new DateTime(2022, 12, 30, 0, 32, 1),
                     Data_Type = "ph",
                     Sensor_Id = 2
@@ -101,7 +101,7 @@ public static class SeedData
 
                 new Measurements
                 {
-                    Data = 0.2m,
+                    Data = 1.2m,
                     Timestamp = new DateTime(2023, 1, 2, 14, 45, 42),
                     Data_Type = "ph",
                     Sensor_Id = 2
@@ -109,7 +109,7 @@ public static class SeedData
 
                 new Measurements
                 {
-                    Data = 0.23m,
+                    Data = 1.23m,
                     Timestamp = new DateTime(2023, 1, 15, 3, 2, 1),
                     Data_Type = "ph",
                     Sensor_Id = 2
@@ -117,7 +117,7 @@ public static class SeedData
 
                 new Measurements
                 {
-                    Data = 0.76m,
+                    Data = 1.76m,
                     Timestamp = new DateTime(2023, 2, 11, 23, 2, 1),
                     Data_Type = "ph",
                     Sensor_Id = 2
@@ -125,7 +125,7 @@ public static class SeedData
 
                 new Measurements
                 {
-                    Data = 0.63m,
+                    Data = 1.63m,
                     Timestamp = new DateTime(2023, 2, 11, 23, 50, 1),
                     Data_Type = "ph",
                     Sensor_Id = 2
@@ -133,7 +133,7 @@ public static class SeedData
 
                 new Measurements
                 {
-                    Data = 0.55m,
+                    Data = 1.55m,
                     Timestamp = new DateTime(2023, 2, 21, 23, 2, 56),
                     Data_Type = "ph",
                     Sensor_Id = 2

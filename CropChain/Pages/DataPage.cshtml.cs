@@ -12,7 +12,7 @@ namespace CropChain.Pages
 
         private DataCollection dataCollection;
         private List<DataCollection> dataCollections;
-        private Plot dataPlot = new Plot();
+        private int nPlots;
 
 
         private readonly CropChain.Data.CropChainContext _context;
@@ -21,31 +21,44 @@ namespace CropChain.Pages
         {
             dataCollections = new List<DataCollection>();
             _context = context;
+            nPlots = 0;
         }
 
         public void OnGet()
         {
             this.dataCollection = Deserializer.Get_Typed_DataCollection(_context, 5, "humid");
-            ConstructChart();
+            this.dataCollections = Deserializer.Get_DataCollections_By_Sensor_ID(_context, 5);
+            
+            int graph_id = 0;
+            foreach(DataCollection dataCollection in dataCollections) 
+            {
+                Console.WriteLine(dataCollection);
+                ConstructChart(dataCollection, graph_id);
+                graph_id++;
+            }
+            this.nPlots = dataCollections.Count();
         }
 
-        private void ConstructChart()
+        private void ConstructChart(DataCollection dataCollection, int graph_id)
         {
-            double[] y = new double[this.dataCollection.getAll().Count()];
+            Plot dataPlot = new Plot();
+
+            double[] y = new double[dataCollection.getAll().Count()];
             DateTime[] dateTimes = new DateTime[y.Length];
             
             for (int i = 0;i < y.Length; i++) 
             {
-                y[i] = (double)this.dataCollection.getAll()[i].Data;
-                dateTimes[i] = this.dataCollection.getAll()[i].Timestamp;
+                y[i] = (double)dataCollection.getAll()[i].Data;
+                dateTimes[i] = dataCollection.getAll()[i].Timestamp;
             }
 
             double[] x = dateTimes.Select(x => x.ToOADate()).ToArray();
 
-            this.dataPlot.AddScatter(x, y);
-            this.dataPlot.AddHorizontalLine((double)this.dataCollection.getLimit());
-            this.dataPlot.XAxis.DateTimeFormat(true);
-            this.dataPlot.SaveFig("wwwroot/resources/temp1.png");
+            dataPlot.AddScatter(x, y);
+            dataPlot.AddHorizontalLine((double)dataCollection.getLimit());
+            dataPlot.XAxis.DateTimeFormat(true);
+            dataPlot.XAxis2.Label("Sensor: " + dataCollection.getSensor_Id().ToString() + "  |  Data Type: " + dataCollection.getData_Type());
+            dataPlot.SaveFig("wwwroot/resources/temp" + graph_id.ToString() + ".png");
         }
 
         public DataCollection GetDataCollection()
@@ -53,9 +66,9 @@ namespace CropChain.Pages
             return this.dataCollection;
         }
 
-        public Plot GetPlot()
+        public int GetNPlots()
         {
-            return this.dataPlot;
+            return this.nPlots;
         }
     }
 }
