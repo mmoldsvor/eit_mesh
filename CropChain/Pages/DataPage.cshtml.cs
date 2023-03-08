@@ -28,7 +28,6 @@ namespace CropChain.Pages
             int graph_id = 0;
             foreach(DataCollection dataCollection in dataCollections) 
             {
-                Console.WriteLine(dataCollection);
                 ConstructChart(dataCollection, graph_id);
                 graph_id++;
             }
