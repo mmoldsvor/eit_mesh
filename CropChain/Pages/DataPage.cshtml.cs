@@ -38,6 +38,7 @@ namespace CropChain.Pages
         {
             Plot dataPlot = new Plot();
 
+            // Setup data
             double[] y = new double[dataCollection.GetAll().Count];
             DateTime[] dateTimes = new DateTime[y.Length];
             
@@ -49,11 +50,20 @@ namespace CropChain.Pages
 
             double[] x = dateTimes.Select(x => x.ToOADate()).ToArray();
 
+            
+            // Configure plot
             dataPlot.AddScatter(x, y);
+            
             dataPlot.AddHorizontalLine((double)dataCollection.GetLimit()[0]);
             dataPlot.AddHorizontalLine((double)dataCollection.GetLimit()[1]);
+            
             dataPlot.XAxis.DateTimeFormat(true);
-            dataPlot.XAxis2.Label("Sensor: " + dataCollection.GetSensor_Id().ToString() + "  |  Data Type: " + dataCollection.GetData_Type());
+            
+            dataPlot.XAxis2.Label("Sensor: " 
+                + dataCollection.GetSensor_Id().ToString() 
+                + "  |  Data Type: " 
+                + dataCollection.GetData_Type());
+
             dataPlot.SaveFig("wwwroot/resources/temp" + graph_id.ToString() + ".png");
         }
 
