@@ -10,12 +10,9 @@ namespace CropChain.Pages
     public class DataPageModel : PageModel
     {
 
-        private DataCollection dataCollection;
+        private readonly CropChain.Data.CropChainContext _context;
         private List<DataCollection> dataCollections;
         private int nPlots;
-
-
-        private readonly CropChain.Data.CropChainContext _context;
 
         public DataPageModel(CropChain.Data.CropChainContext context)
         {
@@ -26,44 +23,48 @@ namespace CropChain.Pages
 
         public void OnGet()
         {
-            this.dataCollection = Deserializer.Get_Typed_DataCollection(_context, 5, "humid");
             this.dataCollections = Deserializer.Get_DataCollections_By_Sensor_ID(_context, 5);
             
             int graph_id = 0;
             foreach(DataCollection dataCollection in dataCollections) 
             {
-                Console.WriteLine(dataCollection);
                 ConstructChart(dataCollection, graph_id);
                 graph_id++;
             }
-            this.nPlots = dataCollections.Count();
+            this.nPlots = dataCollections.Count;
         }
 
         private void ConstructChart(DataCollection dataCollection, int graph_id)
         {
             Plot dataPlot = new Plot();
 
-            double[] y = new double[dataCollection.getAll().Count()];
+            // Setup data
+            double[] y = new double[dataCollection.GetAll().Count];
             DateTime[] dateTimes = new DateTime[y.Length];
             
             for (int i = 0;i < y.Length; i++) 
             {
-                y[i] = (double)dataCollection.getAll()[i].Data;
-                dateTimes[i] = dataCollection.getAll()[i].Timestamp;
+                y[i] = (double)dataCollection.GetAll()[i].Data;
+                dateTimes[i] = dataCollection.GetAll()[i].Timestamp;
             }
 
             double[] x = dateTimes.Select(x => x.ToOADate()).ToArray();
 
+            
+            // Configure plot
             dataPlot.AddScatter(x, y);
-            dataPlot.AddHorizontalLine((double)dataCollection.getLimit());
+            
+            dataPlot.AddHorizontalLine((double)dataCollection.GetLimit()[0]);
+            dataPlot.AddHorizontalLine((double)dataCollection.GetLimit()[1]);
+            
             dataPlot.XAxis.DateTimeFormat(true);
-            dataPlot.XAxis2.Label("Sensor: " + dataCollection.getSensor_Id().ToString() + "  |  Data Type: " + dataCollection.getData_Type());
-            dataPlot.SaveFig("wwwroot/resources/temp" + graph_id.ToString() + ".png");
-        }
+            
+            dataPlot.XAxis2.Label("Sensor: " 
+                + dataCollection.GetSensor_Id().ToString() 
+                + "  |  Data Type: " 
+                + dataCollection.GetData_Type());
 
-        public DataCollection GetDataCollection()
-        {
-            return this.dataCollection;
+            dataPlot.SaveFig("wwwroot/resources/temp" + graph_id.ToString() + ".png");
         }
 
         public int GetNPlots()
