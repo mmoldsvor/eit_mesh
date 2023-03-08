@@ -10,11 +10,9 @@ namespace CropChain.Pages
     public class DataPageModel : PageModel
     {
 
+        private readonly CropChain.Data.CropChainContext _context;
         private List<DataCollection> dataCollections;
         private int nPlots;
-
-
-        private readonly CropChain.Data.CropChainContext _context;
 
         public DataPageModel(CropChain.Data.CropChainContext context)
         {
@@ -53,7 +51,8 @@ namespace CropChain.Pages
             double[] x = dateTimes.Select(x => x.ToOADate()).ToArray();
 
             dataPlot.AddScatter(x, y);
-            dataPlot.AddHorizontalLine((double)dataCollection.getLimit());
+            dataPlot.AddHorizontalLine((double)dataCollection.getLimit()[0]);
+            dataPlot.AddHorizontalLine((double)dataCollection.getLimit()[1]);
             dataPlot.XAxis.DateTimeFormat(true);
             dataPlot.XAxis2.Label("Sensor: " + dataCollection.getSensor_Id().ToString() + "  |  Data Type: " + dataCollection.getData_Type());
             dataPlot.SaveFig("wwwroot/resources/temp" + graph_id.ToString() + ".png");
