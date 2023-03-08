@@ -38,12 +38,17 @@ namespace CropChain.Data
 
         public static DataCollection GetDataCollection(CropChain.Data.CropChainContext context, int n)
         {
-            return ConstructData(context.Measurements.OrderByDescending(x => x.Timestamp).Take(n).ToList());
+            return ConstructData(context.Measurements
+                .OrderByDescending(x => x.Timestamp)
+                .Take(n).ToList());
         }
 
         public static DataCollection Get_Typed_DataCollection(CropChain.Data.CropChainContext context, int n, string type)
         {
-            return ConstructData(context.Measurements.OrderByDescending(x => x.Timestamp).Where(x => x.Data_Type == type).Take(n).ToList());
+            return ConstructData(context.Measurements
+                .OrderByDescending(x => x.Timestamp)
+                .Where(x => x.Data_Type == type)
+                .Take(n).ToList());
         }
 
         public static List<DataCollection> Get_DataCollections_By_Sensor_ID(CropChain.Data.CropChainContext context, int n)
@@ -53,10 +58,10 @@ namespace CropChain.Data
 
             foreach (int id in ids)
             {
-                collections.Add(
-                    ConstructData(
-                        context.Measurements.OrderByDescending(x => x.Timestamp).Where(x => x.Sensor_Id == id).Take(n).ToList()
-                    ));
+                collections.Add(ConstructData(context.Measurements.
+                    OrderByDescending(x => x.Timestamp)
+                    .Where(x => x.Sensor_Id == id)
+                    .Take(n).ToList()));
             }
 
 
@@ -66,7 +71,10 @@ namespace CropChain.Data
 
         internal static List<int> GetSensorIDs(CropChain.Data.CropChainContext context) 
         {
-            List<Measurements> temp = context.Measurements.GroupBy(x => x.Sensor_Id).Select(g => g.OrderBy(x => x.Sensor_Id).First()).ToList();
+            List<Measurements> temp = context.Measurements
+                .GroupBy(x => x.Sensor_Id)
+                .Select( g => g.OrderBy(x => x.Sensor_Id).First() )
+                .ToList();
 
             List<int> ids = new List<int>();
             foreach (Measurements measurements in temp) 

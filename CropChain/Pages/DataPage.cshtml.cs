@@ -31,14 +31,14 @@ namespace CropChain.Pages
                 ConstructChart(dataCollection, graph_id);
                 graph_id++;
             }
-            this.nPlots = dataCollections.Count();
+            this.nPlots = dataCollections.Count;
         }
 
         private void ConstructChart(DataCollection dataCollection, int graph_id)
         {
             Plot dataPlot = new Plot();
 
-            double[] y = new double[dataCollection.getAll().Count()];
+            double[] y = new double[dataCollection.getAll().Count];
             DateTime[] dateTimes = new DateTime[y.Length];
             
             for (int i = 0;i < y.Length; i++) 
