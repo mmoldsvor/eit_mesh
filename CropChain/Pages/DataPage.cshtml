@@ -9,10 +9,6 @@
 
 <h2>Humidity</h2>
 
-<p>
-    Latest measurement: @Model.GetDataCollection().getLatest().Timestamp.ToString() - @Model.GetDataCollection().getLatest().Data.ToString()
-</p>
-
 @{
     for (int i = 0; i < Model.GetNPlots(); i++)
     {

@@ -10,7 +10,6 @@ namespace CropChain.Pages
     public class DataPageModel : PageModel
     {
 
-        private DataCollection dataCollection;
         private List<DataCollection> dataCollections;
         private int nPlots;
 
@@ -26,7 +25,6 @@ namespace CropChain.Pages
 
         public void OnGet()
         {
-            this.dataCollection = Deserializer.Get_Typed_DataCollection(_context, 5, "humid");
             this.dataCollections = Deserializer.Get_DataCollections_By_Sensor_ID(_context, 5);
             
             int graph_id = 0;
@@ -59,11 +57,6 @@ namespace CropChain.Pages
             dataPlot.XAxis.DateTimeFormat(true);
             dataPlot.XAxis2.Label("Sensor: " + dataCollection.getSensor_Id().ToString() + "  |  Data Type: " + dataCollection.getData_Type());
             dataPlot.SaveFig("wwwroot/resources/temp" + graph_id.ToString() + ".png");
-        }
-
-        public DataCollection GetDataCollection()
-        {
-            return this.dataCollection;
         }
 
         public int GetNPlots()
