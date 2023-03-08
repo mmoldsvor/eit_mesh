@@ -1,5 +1,7 @@
 sensor_client
 sensor_server
+*.svg
+*.png
 .vscode
 mesh_core
 /*/build
