@@ -56,25 +56,25 @@
         }
 
 
-        public DataPoint getLatest()
+        public DataPoint GetLatest()
         {
             return measurements.Last();
         }
 
-        public List<DataPoint> getAll()
+        public List<DataPoint> GetAll()
         {
             return measurements;
         }
 
-        public float[] getLimit()
+        public float[] GetLimit()
         {
             return alertLimit;
         }
 
-        public string getData_Type()
+        public string GetData_Type()
         { return data_Type; }
 
-        public int getSensor_Id()
+        public int GetSensor_Id()
         { return sensor_Id; }
 
     }

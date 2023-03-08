@@ -38,22 +38,22 @@ namespace CropChain.Pages
         {
             Plot dataPlot = new Plot();
 
-            double[] y = new double[dataCollection.getAll().Count];
+            double[] y = new double[dataCollection.GetAll().Count];
             DateTime[] dateTimes = new DateTime[y.Length];
             
             for (int i = 0;i < y.Length; i++) 
             {
-                y[i] = (double)dataCollection.getAll()[i].Data;
-                dateTimes[i] = dataCollection.getAll()[i].Timestamp;
+                y[i] = (double)dataCollection.GetAll()[i].Data;
+                dateTimes[i] = dataCollection.GetAll()[i].Timestamp;
             }
 
             double[] x = dateTimes.Select(x => x.ToOADate()).ToArray();
 
             dataPlot.AddScatter(x, y);
-            dataPlot.AddHorizontalLine((double)dataCollection.getLimit()[0]);
-            dataPlot.AddHorizontalLine((double)dataCollection.getLimit()[1]);
+            dataPlot.AddHorizontalLine((double)dataCollection.GetLimit()[0]);
+            dataPlot.AddHorizontalLine((double)dataCollection.GetLimit()[1]);
             dataPlot.XAxis.DateTimeFormat(true);
-            dataPlot.XAxis2.Label("Sensor: " + dataCollection.getSensor_Id().ToString() + "  |  Data Type: " + dataCollection.getData_Type());
+            dataPlot.XAxis2.Label("Sensor: " + dataCollection.GetSensor_Id().ToString() + "  |  Data Type: " + dataCollection.GetData_Type());
             dataPlot.SaveFig("wwwroot/resources/temp" + graph_id.ToString() + ".png");
         }
 
