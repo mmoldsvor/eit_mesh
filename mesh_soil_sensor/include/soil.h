@@ -9,7 +9,7 @@
 
 /** Soil set message parameters.  */
 struct bt_mesh_soil_report {
-	uint8_t humidity;
+	uint16_t humidity;
     uint8_t temperature;
 };
 

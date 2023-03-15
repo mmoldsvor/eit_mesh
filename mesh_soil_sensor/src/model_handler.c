@@ -89,3 +89,8 @@ const struct bt_mesh_comp *model_handler_init(void)
 
 	return &comp;
 }
+
+void soil_report(struct bt_mesh_soil_report soil)
+{
+	bt_mesh_soil_srv_report(&soil_srv, soil);
+}

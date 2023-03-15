@@ -100,7 +100,7 @@ void my_work_handler(struct k_work *work)
 
     printk("ADC reading:\n");
 	for (size_t i = 0U; i < ARRAY_SIZE(adc_channels); i++) {
-			int32_t val_mv;
+			// int32_t val_mv;
 
 		printk("- %s, channel %d: ",
 		       adc_channels[i].dev->name,
@@ -115,22 +115,22 @@ void my_work_handler(struct k_work *work)
 		} else {
 			printk("%d\n", buf);
 			soil.humidity = buf;
+			soil.temperature = 0;
 		}
 
-		// bt_mesh_soil_srv_report(srv, soil)
+		soil_report(soil);
 
 	}
 }
 
-K_WORK_DEFINE(my_work, my_work_handler);
+K_WORK_DEFINE(adc_work, my_work_handler);
 
 void my_timer_handler(struct k_timer *dummy)
 {
-    k_work_submit(&my_work);
+    k_work_submit(&adc_work);
 }
 
 K_TIMER_DEFINE(my_timer, my_timer_handler, NULL);
-
 
 /* start periodic timer that expires once every second */
 
