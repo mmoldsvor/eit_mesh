@@ -3,6 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime, timezone
 import random
+from serial_parser import serial_generator
 
 SENSOR_HUMIDITY = 'humid'
 SENSOR_TEMPERATURE = 'temp'
@@ -29,9 +30,10 @@ class Measurements(Base):
     data = Column(DECIMAL)
     timestamp = Column(DateTime)
     data_type = Column(NCHAR)
+    sensor_id = Column(Integer)
 
 
-def insert_measurement(data, data_type, timestamp=None):
+def insert_measurement(data, data_type, id, timestamp=None):
     if (data_type in SENSOR_TYPES):
         current_timestamp = timestamp
         if timestamp is None:
@@ -39,12 +41,16 @@ def insert_measurement(data, data_type, timestamp=None):
         session.add(Measurements(
             data = data,
             timestamp = current_timestamp,
-            data_type = data_type
+            data_type = data_type,
+            sensor_id = id
         ))
         session.commit()
     else:
         print('Sensor type was not valid')
 
 if __name__ == '__main__':
-    random_data = random.uniform(0, 1)  
-    insert_measurement(random_data, SENSOR_HUMIDITY)
+    # random_data = random.uniform(0, 1)
+    yield_object = serial_generator()
+    data = yield_object.next()
+    insert_measurement(data[0], SENSOR_TEMPERATURE, data[2])
+    insert_measurement(data[1], SENSOR_HUMIDITY, data[2])
