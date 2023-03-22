@@ -18,16 +18,16 @@ int bt_mesh_soil_srv_report(struct bt_mesh_soil_srv *srv, struct bt_mesh_soil_re
     return bt_mesh_model_publish(srv->model);
 }
 
-// static int bt_mesh_soil_srv_update(struct bt_mesh_model *model)
-// {
-// 	struct bt_mesh_soil_srv *soil = model->user_data;
-//     printk("bt_mesh_soil_srv_update\n");
-//     bt_mesh_model_msg_init(model->pub->msg, BT_MESH_SOIL_OP_SOIL_REPORT);
-// 	net_buf_simple_add_u8(model->pub->msg, 1);
-// 	net_buf_simple_add_u8(model->pub->msg, 2);
+static int bt_mesh_soil_srv_update(struct bt_mesh_model *model)
+{
+	struct bt_mesh_soil_srv *soil = model->user_data;
+    printk("bt_mesh_soil_srv_update\n");
+    // bt_mesh_model_msg_init(model->pub->msg, BT_MESH_SOIL_OP_SOIL_REPORT);
+	// net_buf_simple_add_u8(model->pub->msg, 1);
+	// net_buf_simple_add_u8(model->pub->msg, 2);
 
-//     return 0;
-// }
+    return 0;
+}
 
 static int bt_mesh_soil_srv_init(struct bt_mesh_model *model)
 {
@@ -38,7 +38,7 @@ static int bt_mesh_soil_srv_init(struct bt_mesh_model *model)
 	net_buf_simple_init_with_data(&srv->pub_msg, srv->buf, sizeof(srv->buf));
 	
     srv->pub.msg = &srv->pub_msg;
-    // srv->pub.update = bt_mesh_soil_srv_update;
+    srv->pub.update = bt_mesh_soil_srv_update;
 
 	printk("Init Soil Model\n");
 	return 0;

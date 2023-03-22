@@ -28,7 +28,7 @@ static const struct adc_dt_spec adc_channels[] = {
 
 
 static void configure_node() {
-	printk("Configura node\n");
+	printk("Configure node\n");
 }
 
 
