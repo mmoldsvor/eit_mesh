@@ -8,7 +8,7 @@ static int handle_message_report(struct bt_mesh_model *model, struct bt_mesh_msg
 
 	struct bt_mesh_soil_cli *cli = model->user_data;
 	struct bt_mesh_soil_report soil;
-	soil.humidity = net_buf_simple_pull_u8(buf);
+	soil.humidity = net_buf_simple_pull_le16(buf);
 	soil.temperature = net_buf_simple_pull_u8(buf);
 
 	if (cli->handlers->report) {
@@ -20,7 +20,7 @@ static int handle_message_report(struct bt_mesh_model *model, struct bt_mesh_msg
 
 const struct bt_mesh_model_op _bt_mesh_soil_cli_op[] = {
 	{
-		BT_MESH_SOIL_OP_SOIL_REPORT, BT_MESH_LEN_EXACT(2), handle_message_report
+		BT_MESH_SOIL_OP_SOIL_REPORT, BT_MESH_LEN_EXACT(3), handle_message_report
 	},
 	BT_MESH_MODEL_OP_END,
 };
